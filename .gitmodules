@@ -1,0 +1,6 @@
+[submodule "lib/proxyquire.lua"]
+	path = lib/proxyquire.lua
+	url = https://github.com/ryanplusplus/proxyquire.lua.git
+[submodule "lib/mach.lua"]
+	path = lib/mach.lua
+	url = https://github.com/ryanplusplus/mach.lua.git

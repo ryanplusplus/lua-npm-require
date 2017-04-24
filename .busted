@@ -1,0 +1,5 @@
+return {
+  default = {
+    lpath = 'src/?.lua;lib/proxyquire/src/?.lua;lib/mach.lua/src/?.lua'
+  }
+}
