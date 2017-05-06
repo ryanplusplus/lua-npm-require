@@ -1,6 +1,6 @@
-local current_working_directory = require 'current_working_directory'
-local requester_path = require 'requester_path'
-local file_exists = require 'file_exists'
+local current_working_directory = require 'util.current_working_directory'
+local requester_path = require 'util.requester_path'
+local file_exists = require 'util.file_exists'
 
 local function get_directories(path)
   local directories = {}

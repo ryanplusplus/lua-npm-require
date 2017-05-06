@@ -10,13 +10,13 @@ describe('require', function()
   }, 'fake')
 
   local require = proxyquire('require', {
-    current_working_directory = function()
+    ['util.current_working_directory'] = function()
       return current_working_directory
     end,
-    requester_path = function()
+    ['util.requester_path'] = function()
       return requester_path
     end,
-    file_exists = function(file)
+    ['util.file_exists'] = function(file)
       return files[file]
     end
   })
