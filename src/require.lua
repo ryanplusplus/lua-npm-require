@@ -1,6 +1,6 @@
 local current_working_directory = require 'util.current_working_directory'
 local requester_path = require 'util.requester_path'
-local file_exists = require 'util.file_exists'
+local require = require
 
 local function get_directories(path)
   local directories = {}
@@ -28,30 +28,30 @@ local function find_module(module_name)
   current_path = normalize(current_path)
 
   if is_relative(module_name) then
-    local file = normalize(current_path .. module_name .. '.lua')
-    if file_exists(file) then return file end
+    local found, module = pcall(function()
+      return require(current_path .. module_name)
+    end)
+
+    if found then return module end
   else
     for _, directory in ipairs(get_directories(current_path)) do
-      local file = directory .. 'node_modules/' .. module_name .. '/index.lua'
-      if file_exists(file) then return file end
+      local found, module = pcall(function()
+        return require(directory .. 'node_modules/' .. module_name .. '/index')
+      end)
+
+      if found then return module end
     end
+
+    local found, module = pcall(function()
+      return require(module_name)
+    end)
+
+    if found then return module end
   end
 end
 
-local m = {
-  cache = {}
-}
-
-return setmetatable(m, {
-  __call = function(_, module_name)
-    local module = find_module(module_name)
-    assert(module, "Could not find module '" .. module_name .. "'")
-
-    if not m.cache[module] then
-      local loaded = loadfile(module)()
-      m.cache[module] = loaded == nil or loaded
-    end
-
-    return m.cache[module]
-  end
-})
+return function(module_name)
+  local module = find_module(module_name)
+  assert(module, "Could not find module '" .. module_name .. "'")
+  return module
+end
