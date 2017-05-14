@@ -1,6 +1,9 @@
 local current_working_directory = require 'util.current_working_directory'
 local requester_path = require 'util.requester_path'
+local file_exists = require 'util.file_exists'
 local require = require
+
+package.path = package.path .. '?.lua;'
 
 local function get_directories(path)
   local directories = {}
@@ -28,18 +31,14 @@ local function find_module(module_name)
   current_path = normalize(current_path)
 
   if is_relative(module_name) then
-    local found, module = pcall(function()
-      return require(current_path .. module_name)
-    end)
-
-    if found then return module end
+    if file_exists(current_path .. module_name .. '.lua') then
+      return require(normalize(current_path .. module_name))
+    end
   else
     for _, directory in ipairs(get_directories(current_path)) do
-      local found, module = pcall(function()
+      if file_exists(directory .. 'node_modules/' .. module_name .. '/index.lua') then
         return require(directory .. 'node_modules/' .. module_name .. '/index')
-      end)
-
-      if found then return module end
+      end
     end
 
     local found, module = pcall(function()
